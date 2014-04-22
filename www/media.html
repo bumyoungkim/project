@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hello World</title>
+        <script type="text/javascript" src="cordova.js"></script>
+        <link rel="stylesheet"  href="js/jquery.mobile-1.4.2.css" />
+        <script src="js/jquery-1.11.0.min.js"></script>
+        <script src="js/jquery.mobile-1.4.2.js"></script>
+        <script type="text/javascript">
+        	document.addEventListener("deviceready", onDeviceReady, false);
+        	
+        	function onDeviceReady(){}
+        
+            var my_media = null;
+            var mediaTimer = null;
+            var playFlag = true;
+            
+            function playAudio(src){
+                if(playFlag){
+                    var path = window.location.pathname;
+                    path = path.substr(path, path.length-10);
+                    
+                    var newPath = "file://"+path+src;
+                    
+                    if(my_media == null){
+                        my_media = new Media(src, onSuccess, onError);
+                    }
+                    
+                    my_media.play();
+                    
+                    if(mediaTimer == null){
+                        mediaTimer = setInterval(function(){
+                            my_media.getCurrentPosition(
+                                // success callback
+                                function(position){
+                                     if(position > -1){
+                                         setAudioPosition((position)+ " sec");
+                                     }
+                                 },
+                                // error callback
+                                function(e){
+                                     alert("=] Error getting pos = "+ e);
+                                     setAudioPosition("Error : "+ e);
+                                 }
+                         );},1000);
+
+                     // 시작 위치 조정
+                     setTimeout(function(){
+                        my_media.seekTo(5500);
+                      },500);
+                    }
+                }
+                playFlag = false;
+            }
+        
+        function pauseAudio(){
+            playFlag = true;
+            if(my_media){
+                my_media.pause();
+            }
+        }
+        
+        function stopAudio(){
+            playFlag = true;
+            if(my_media){
+                my_media.stop();
+            }
+            clearInterval(mediaTimer);
+            mediaTimer = null;
+        }
+        
+        function onSuccess(){
+            playFlag = true;
+            alert("playAudio():Audio Success");
+        }
+        
+        function onError(error){
+            alert("code : "    + error.code    + "\n"+
+                  "message : " + error.message + "\n");
+        }
+        
+        function setAudioPosition(position){
+            document.getElementById('audio_position').innerHTML = position;
+        }
+        
+        
+        function setVolumne(volume){
+            if(my_media){
+                my_media.setVolume(volume);
+            }
+        }
+        
+        </script>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header" data-position="fixed">
+                <a href="index.html" data-role="button">back</a>
+                <h1>Media</h1>
+            </div>
+            <div data-role="content">
+                <div data-role="tabs">
+                    <ul data-role="listview" data-inset="true" class="tablist-left">
+                        <li><a href="#audio" data-ajax="false">Audio</a></li>
+                        <li><a href="#Volumne" data-ajax="false">Volumne</a></li>
+                    </ul>
+                    <ul id="audio" class="tablist-content" data-role="listview" data-inset="true">
+                        <li><a href="#" onclick="playAudio('test.mp3');">Play Audio</a></li>
+                        <li><a href="#" onclick="pauseAudio();">Pause Playing Audio</a></li>
+                        <li><a href="#" onclick="stopAudio();">Stop Playing Audio</a></li>
+                    </ul>
+                    <ul id="Volumne" class="tablist-content" data-role="listview" data-inset="true">
+                        <li><a href="#" onclick="setVolumne('0.0');">Mute Audio</a></li>
+                        <li><a href="#" onclick="setVolumne('1.0');">Unmute Audio</a></li>
+                    </ul>
+                    <p id="audio_position"></p>
+                </div>
+            </div>
+        </div>
+
+<!--
+    	<font size="5"><a href="#" class="btn large" onclick="playAudio('test.mp3');">Play Audio</a></font><br>
+    	<br><br>
+    	<font size="5"><a href="#" class="btn large" onclick="pauseAudio();">Pause Playing Audio</a></font><br>
+    	<br><br>
+    	<font size="5"><a href="#" class="btn large" onclick="stopAudio();">Stop Playing Audio</a></font><br>
+    	<br><br>
+    	<font size="5"><a href="#" class="btn large" onclick="setVolumne('0.0');">Mute Audio</a></font><br>
+    	<br><br>
+    	<font size="5"><a href="#" class="btn large" onclick="setVolumne('1.0');">Unmute Audio</a></font><br>
+    	<br><br>
+    	
+    	<font size="5"><p id="audio_position"></p></font>
+    	
+    	<hr>
+    	<font id="back" size="5"><a href="index.html">back</a></font>
+ 
+ -->
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

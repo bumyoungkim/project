@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hello World</title>
+        <script type="text/javascript" src="cordova.js"></script>
+        <link rel="stylesheet"  href="js/jquery.mobile-1.4.2.css" />
+        <script src="js/jquery-1.11.0.min.js"></script>
+        <script src="js/jquery.mobile-1.4.2.js"></script>
+        <script type="text/javascript">
+            
+            var pictureSource;
+            var destinationType;
+            
+			document.addEventListener("deviceready", onDeviceReady, false);
+						
+			function onDeviceReady()
+			{
+                pictureSource = navigator.camera.PictureSourceType;
+                destinationType = navigator.camera.DestinationType;
+			}
+        
+            function onPhotoDataSuccess(imageData){
+                var smallImage = document.getElementById("smallImage");
+                smallImage.style.display = 'block';
+                smallImage.src = "data:image/jpeg;base64," + imageData;
+            }
+        
+            function capturePhoto(){
+                navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality:50, destinationType: destinationType.DATA_URL, saveToPhotoAlbum: true});
+            }
+        
+            function onFail(message){
+                alert("Failed because : "+ message);
+            }
+        
+            function capturePhotoEdit(source){
+                navigator.camera.getPicture(onPhotoDataSuccess, onFail, {quality: 20, allowEdit: true, destinationType: destinationType.DATA_URL});
+            }
+        
+            function onPhotoURISuccess(imageURI){
+                var largeImage = document.getElementById('largeImage');
+                largeImage.style.display = 'block';
+                largeImage.src = imageURI;
+            }
+        
+            function getPhoto(source){
+                navigator.camera.getPicture(onPhotoURISuccess, onFail, {quality:50, destinationType: destinationType.FILE_URI, sourceType: source});
+            }
+        </script>
+    </head>
+    <body>
+        <div data-role="page" id="photo">
+            <div data-role="header" data-position="fixed">
+                <a href="index.html" data-role="button">back</a>
+                <h1>카메라</h1>
+                <div data-role="tabs">
+                    <div data-role="navbar">
+                        <ul>
+                            <li><a href="#photo" data-ajax="false" class="ui-btn-active ui-state-persist">사진</a></li>
+                            <li><a href="#album" data-ajax="false">앨범</a></li>
+                        </ul>
+                    </div>
+                    <div>
+            </div>
+            <div data-role="content">
+                
+                <div id="photo">
+                    <a href="#" data-role="button" onclick="capturePhoto();">Capter Photeo</a>
+                    <a href="#" data-role="button" onclick="capturePhotoEdit();" >Capture Editable Photo</a>
+                    <img style="display:none;width:60px;height:60px;" id="smallImage" src=""/>
+                </div>
+                <div id="album">
+                    <a href="#" data-role="button" onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Libray</a>
+                    <a href="#" data-role="button" onclick="getPhoto(pictureSource.PHOTOLIBRARY);" >Form Photo Album</a>
+                   <!-- <img style-"display:none;" id="largeImage" src=""/> -->
+                   <img style-"display:none;width:100px;heigth:60px;" id="largeImage" src=""/>
+                </div>
+            </div>
+        </div>
+<!--
+        <button onclick="capturePhoto();">Captuer Photo</button><br>
+        <br><br>
+        <button onclick="capturePhotoEdit();">Capture Editable Photo</button>
+        <br><br>
+        <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Libray</button>
+        <br><br>
+        <button onclick="getPhoto(pictureSource.SAVEPHOTOALBUM);">Form Photo Album</button>
+        <img style="display:none;width:60px;height:60px;" id="smallImage" src=""/>
+        <img style-"display:none;" id="largeImage" src=""/>
+        <br><br>
+        <font id="back" size="30"><a href="index.html">back1</a></font>
+ -->
+    </body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hello World</title>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript">
+        	document.addEventListener("deviceready", onDeviceReady, false);
+        	
+        	function onDeviceReady(){}
+            
+            function getWriter(){
+                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, getFS, fail);
+            }
+        
+            function getFS(fileSystem){
+                fileSystem.root.getFile("readme.txt", {create: true, exclusive: false}, getFileEntry, fail);
+            }
+        
+            function getFileEntry(fileEntry){
+                fileEntry.createWriter(gotFileWriter, fail);
+            }
+        
+            function gotFileWriter(writer){
+                writer.onwriteend = function(evt){
+                    console.log("contents of file now 'some sample text'");
+                    writer.truncate(11);
+                    writer.onwriteend = function(evt){
+                        console.log("contents of file now 'some sample'");
+                        writer.seek(4);
+                        writer.write("different text");
+                        writer.onwriteend = function(evt){
+                            console.log("contents of file now 'some different text'");
+                        }
+                    };
+                };
+                writer.write("some sample text 213123");
+            }
+        
+            function fail(error){
+                console.log("Error Cord : "+ error.code);
+            }
+        
+            function getRead(){
+                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, getReadFS, fail);
+            }
+        
+            function getReadFS(fileSystem){
+                fileSystem.root.getFile("readme.txt", null, getReadFileEntry, fail);
+            }
+        
+            function getReadFileEntry(fileEntry){
+                fileEntry.file(gotFile, fail);
+            }
+        
+            function gotFile(file){
+                readDataUrl(file);
+                readAsText(file);
+            }
+        
+            function readDataUrl(file){
+                var reader = new FileReader();
+                reader.onloadend = function(evt){
+                    console.log("Read as data URL");
+                    alert("=] Url : "+evt.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        
+            function readAsText(file){
+                var reader = new FileReader();
+                reader.onloadend = function(evt){
+                    console.log("Read as test");
+                    alert("=] text : "+evt.target.result);
+                };
+                reader.readAsText(file);
+            }
+        
+            function getFileSystem(){
+                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
+            }
+        
+            function onFileSystemSuccess(fileSystem){
+                alert(fileSystem.name);
+                alert(fileSystem.root.name);
+            }
+        </script>
+    </head>
+    <body>
+        <br><br>
+    	<button onclick="getWriter()">글쓰기</button>
+    	<hr>
+        <br>
+        <button onclick="getRead()">글읽기</button>
+        <hr>
+        <br>
+        <button onclick="getFileSystem()">파일 시스템</button>
+        <hr>
+    	<font size="5"><a href="index.html">back</a></font>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

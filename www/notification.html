@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>알람</title>
+        <script type="text/javascript" src="cordova.js"></script>
+        <link rel="stylesheet"  href="js/jquery.mobile-1.4.2.css" />
+        <script src="js/jquery-1.11.0.min.js"></script>
+        <script src="js/jquery.mobile-1.4.2.js"></script>
+        <script type="text/javascript">
+
+            document.addEventListener("deviceready", onDeviceReady, false);
+            
+            function onDeviceReady(){}
+            
+            function showAlert(){
+                
+                var message = document.getElementById("message").value;
+                var title = document.getElementById("title").value;
+                var buttonName = document.getElementById("buttonName").value;
+
+                navigator.notification.alert(message, alertDismissed, title, buttonName);  // 메시지, callback함수 , 제목, 버튼명
+//                navigator.notification.alert("메시지",alertDismissed,"제목","버튼");
+            }
+
+            function alertDismissed(){
+                
+            }
+        
+            function showConfirm(){
+                var message = document.getElementById("message1").value;
+                var title = document.getElementById("title1").value;
+                
+                navigator.notification.confirm(message, onConfirm, title, ['YES','NO']);
+            }
+        
+            function onConfirm(buttonIndex){
+               // if(buttonIndex == 1)
+                    alert("You selected button "+ buttonIndex);
+            }
+        
+            function showPrompt(){
+                navigator.notification.prompt('Please enter tyor name', onPrompt, 'Registration',['OK','Exit'], 'Jane Doe');
+            }
+        
+            function onPrompt(results){
+                alert("You selected button number "+ results.buttonIndex + " and entered "+results.input1);
+            }
+        
+            function playBeep(){
+                navigator.notification.beep(3);
+            }
+        
+            function vibrate(){
+                navigator.notification.vibrate(2000);
+            }
+        </script>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header" data-position="fixed">
+                <a href="index.html" data-role="button">back</a>
+                <h1>알람</h1>
+            </div>
+            <div data-role="content">
+                <div data-role="collapsibleset" data-theme="a" data-content-theme="a">
+                    <div data-role="collapsible">
+                        <h3>alert창 오픈</h3>
+                        <label>message</label>
+                        <input type="text" id="message" data-mini="true">
+                        <label>title</label>
+                        <input type="text" id="title" data-mini="true">
+                        <label>buttonName<label>
+                        <input type="text" id="buttonName">
+                        <a href="#" onclick="showAlert();" data-role="button">alert창 오픈</a>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Show Confirm</h3>
+                        <label>message</label>
+                        <input type="text" id="message1" data-mini="true">
+                        <label>title</label>
+                        <input type="text" id="title1" data-mini="true">
+                        <a href="#" onclick="showConfirm();" data-role="button">Show Confirm</a>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Show Prompt</h3>
+                        <p>버튼을 클릭하세요<p>
+                        <a href="#" onclick="showPrompt();" data-role="button">Show Prompt</a>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Play Beep</h3>
+                        <p>클릭하면 벨이 울립니다.<p>
+                        <a href="#" onclick="playBeep();" data-role="button">Play Beep</a>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Play Vibrate</h3>
+                        <p>클릭하면 진동이 울립니다.</p>
+                        <a href="#" onclick="vibrate();" data-role="button">Play Vibrate</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!--
+        alert 작성<br>
+        message : <input type="text" id="message"><br>
+        title : <input type="text" id="title"><br>
+        buttonName : <input type="text" id="buttonName"><br>
+        <button onclick="showAlert(); return false;">alert 창 오픈</button><br><br>
+        <button onclick="showConfirm(); return false;">Show Confirm</button><br><br>
+        <button onclick="showPrompt(); return false;">Show Prompt</button><br><br>
+        <hr>
+        <button onclick="playBeep(); return false;">Play Beep</button><br><br>
+        <button onclick="vibrate(); return false;">Vibrate</button>
+        <hr>
+        <font size="30"><a href="index.html">back</a></font>
+ -->
+    </body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet"  href="js/jquery.mobile-1.4.2.css" />
+        <title>주소록</title>
+        <script src="js/jquery-1.11.0.min.js"></script>
+        <script src="js/jquery.mobile-1.4.2.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript">
+			document.addEventListener("deviceready", onDeviceReady, false);
+			
+			function onDeviceReady()
+			{
+			}
+        
+            var _global;
+
+
+            function create1(){
+                var name = document.getElementById("createDisplayName").value;
+                var note = document.getElementById("note").value;
+
+                //				var myContact = navigator.contacts.create({"displayName":name});
+                //myContact = navigator.contacts.create({"displayName":name});
+                //myContact.note = note;
+                //myContact.save(onSaveSuccess, onSaveError);
+                
+                //_global = navigator.contacts.create({"displayName":name});
+                _global = navigator.contacts.create();  //  메서드를 호출 해야 디바이스 연락처 연동
+                _global.displayName = "Plumber";        //  adroid에서는 이름으로 적용 아이폰에서는 의미가 없다.
+                _global.nickname = "bum";
+                
+                var iosName = new ContactName();        // 연락처 이름을 설정해줄수 있다. ipone에서는 꼭 생성을 해줘야 이름을 등록 접근이 가능하다.
+                iosName.givenName = name;     // 이름
+                iosName.familyName = "kim";  //성
+                _global.name = iosName;
+
+                var phoneNumbers = [];
+                phoneNumbers[0] = new ContactField('work', '212-555-1234',false);
+                phoneNumbers[1] = new ContactField('mobile','917-555-5432', true); // preferred number
+                phoneNumbers[2] = new ContactField('home', '203-555-7890', false);
+                
+                _global.phoneNumbers = phoneNumbers;
+                _global.note = note;
+                /* var conName = new ContactName();
+                 conName.givenName = name;
+                 _global.name = conName; */
+                if(name != ""){
+                    _global.save(onSaveSuccess, onSaveError);    // save 메소드를 호출하지 디바이스에 저장이 된다.
+                }
+            }
+            
+            function onSaveSuccess(contact){
+                alert("Save Success");
+            }
+            
+            function onSaveError(contactError){
+                alert("Error : = "+contactError.code);
+            }
+            
+            function findEX(){
+                var name = document.getElementById("findDisplayName").value;
+                var options = new ContactFindOptions();   // 연락처를 찾을때 어떤걸 기준으로 검색을 할지 정해줄수있다.
+                options.filter = name;                    // 이름으로 검색
+                var fields = ["givenName","name", "phoneNumbers"];
+                navigator.contacts.find(fields, onSuccess, onError, options);
+            }
+            
+            function onSuccess(contacts){
+//                for(var i=0; i < contacts.length; i++){
+//                    alert("Display Name = "+ contacts[i].name.givenName + "  id : "+ contacts[i].id+
+//                          " phoneNumbers : "+ contacts[i].phoneNumbers[0].value);
+//                }
+
+                for(var i = 0; i < contacts.length; i++){
+                    for(var j = 0; j < contacts[i].phoneNumbers.length; j++){
+                        alert("Type : "      + contacts[i].phoneNumbers[j].type  + "\n"+
+                              "Value : "     + contacts[i].phoneNumbers[j].value + "\n"+
+                              "Preferred : " + contacts[i].phoneNumbers[j].pref  + "\n"+
+                              "name : "      + contacts[i].name.givenName);
+                    }
+                }
+
+//                for(key in contacts[0])
+//                {
+//                	alert(key);
+//                }
+            }
+            
+            function onError(contactError){
+                alert("onError!");
+            }
+            
+            function removeEX(){
+                // remove는 아이디로 삭제 하므로 아이디 값이 필요로 한다.
+                var name = document.getElementById("removeDisplayName").value;
+                var options = new ContactFindOptions();
+                options.filter = name;
+                var fields = ["displayName","name"];
+                if(name != ""){
+                    navigator.contacts.find(fields, remvoeId, onError, options);
+                }
+            }
+            
+            function remvoeId(contacts){
+                var contact = navigator.contacts.create();
+                
+                for(var i=0; i < contacts.length; i++){
+                    contact.id = contacts[i].id;
+                }
+                
+                contact.remove(onRemoveSuccess, onRemoveError);
+            }
+            
+            function onRemoveSuccess(contacts){
+                alert("Removal Success");
+            }
+            
+            function onRemoveError(contactError){
+                alert("Error 11= "+contactError.code);
+            }
+            
+            function findAddre(){
+                var info = document.getElementById("addFind").value;
+                var optinos = new ContactFindOptions();
+                optinos.filter = info;
+                var filter = ["displayName","name", "addresses" , "givenName"];
+                navigator.contacts.find(filter, onFindSuccess, onFindError, optinos);
+            }
+            
+            function onFindSuccess(contacts){
+                for(var i = 0; i < contacts.length; i++){
+                    alert(contacts[i].addresses.length);
+                    for(var j = 0; j < contacts[i].addresses.length; j++){
+                        alert("type : "			+ contacts[i].addresses[j].type );
+                    }
+                }
+            }
+            
+            function onFindError(contactError){
+                alert("onError!");
+            }
+            
+            function phone(){
+                var contact = navigator.contacts.create();
+                
+                var phoneNumbers = [];
+                phoneNumbers[0] = new ContactField("work","212-555-1234",false);
+                phoneNumbers[1] = new ContactField("mobile","917-555-5432", true);
+                phoneNumbers[2] = new ContactField("home","203-555-7890",false);
+                contact.phoneNumbers = phoneNumbers;
+                
+                //contact.save();
+                
+                var options = new ContactFindOptions();
+                options.filter = "";
+                filter = ["displayName", "phoneNumbers"];
+                navigator.contacts.find(filter, onPhoneSuccess, onPhoneError, options);
+            }
+            
+            function onPhoneSuccess(contacts){
+                for(var i = 0; i < contacts.length; i++){
+                    for(var j = 0; j < contacts[i].phoneNumbers.length; j++){
+                        alert("Type : "      + contacts[i].phoneNumbers[j].type  + "\n"+
+                              "Value : "     + contacts[i].phoneNumbers[j].value + "\n"+
+                              "Preferred : " + contacts[i].phoneNumbers[j].pref);
+                    }
+                }
+            }
+            
+            function onPhoneError(contactError){
+                alert("onError!");
+            }
+        </script>
+    </head>
+    <body>
+        <div data-role="page" id="contacts" data-theme="a">
+            <div data-role="header" data-position="fixed">
+                <a href="index.html" data-role="button">back</a>
+                <h1>contacts</h>
+            </div>
+            <div data-role="content">
+                <ui data-role="listview" data-inset="true">
+                    <li>
+                        <div data-role="fieldcontain">
+                            <label for="createDisplayName">이름:</label>
+                            <input type="text" name="createDisplayName" id="createDisplayName" value="" data-mini="true" />
+                            <label for="note">간단한 메모:</label>
+                            <textarea name="note" id="note" data-mini="true" ></textarea>
+                            <button onclick="create1();" data-mini="true">Create</button>
+                        </div>
+                        <div data-role="fieldcontatin">
+                            <label for="findDisplayName">찾을 이름:</label>
+                            <input type="text" id="findDisplayName" name="findDisplayName">
+                            <button onclick="findEX();" data-mini="true">Find</button>
+                            <label>전화번호</label>
+                            <button onclick="phone();">전화번호</button>
+                        </div>
+                        <div data-role="fieldcontatin">
+                            <label>주소</label>
+                            <input type="text" id="addFind">
+                            <button onclick="findAddre();">FindAddress</button>
+                        </div>
+                    </li>
+                </ui>
+            </div>
+        </div>
+<!--        <br><br>
+    	이름 :
+            <input type="text" id="createDisplayName"><br>
+        간단한 메모 :
+            <input type="text" id="note"><br>
+            <button onclick="create1();">Create</button>
+        <hr>
+        찾을 이름 :
+            <input type="text" id="findDisplayName"><br>
+            <button onclick="findEX();">Find</button>
+        <hr>
+        삭제할 이름 :
+            <input type="text" id="removeDisplayName"><br>
+            <button onclick="removeEX();">delete</button>
+        <hr>
+        Find Contacts :
+            <input type="text" id="addFind"><br>
+            <button onclick="findAddre();">FindAddress</button>
+        <hr>
+        전화번호 : <br>
+            <button onclick="phone();">전화번호</button>
+        <hr>
+        <font id="back" size="30"><a href="index.html">back</a></font> -->
+    </body>
+</html>

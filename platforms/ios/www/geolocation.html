@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>지리</title>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript">
+            
+            document.addEventListener("deviceready", onDeviceReady, false);
+            
+            function onDeviceReady(){}
+            
+            function getPostion(){
+                navigator.geolocation.getCurrentPosition(onSuccess, onError);
+            }
+        
+            function onSuccess(position){
+                var point = document.getElementById("point");
+                
+                point.innerHTML = "Latitude : "             + position.coords.latitude + "<br/>"+
+                                  "Logitude : "             + position.coords.longitude+ "<br/>"+
+                                  "Altitude : "             + position.coords.altitued+ "<br/>"+
+                                  "Accuracy : "             + position.coords.accuracy+ "<br/>"+
+                                  "Altitude Accuracy: "     + position.coords.altitudeAccuracy+ "<br/>"+
+                                  "Heading : "              + position.coords.heading + "<br/>"+
+                                  "Speed : "                + position.coords.speed + "<br/>"+
+                                  "Timestamp : "            + position.timestamp +"<br/>"+;
+            }
+        
+            function onError(error){
+                alert("code : "   + error.code   + "\n"+ "message : "+ error.message+"\n");
+            }
+        </script>
+    </head>
+    <body>
+        <br><br>
+        <button onclick="getPostion();">getCurrentPostiont</button>
+        <br><br>
+        <div id="point"></div>
+        <font id="back" size="30"><a href="index.html">back1</a></font>
+    </body>
+</html>
